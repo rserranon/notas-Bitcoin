@@ -110,7 +110,7 @@ Un componente muy importante de las pruebas funcionales es la clase **_P2PInterf
 
 La case _P2PInterface_ hereda de la clase _P2PConnection_ y contiene un número importante de callbacks que pueden ser sobreescritos, además de contener diversas funciones de wait* y sync*.
 
-![P2PInterface](img/test-P2PInterface-class.png)
+![P2PInterface](img/P2PInterface-class.png)
 
 P2PConnection es una clase que se utiliza para conectarse a las instancias bitcoind que corren los nodos (TestNode). P2PInterface contiene una lógica de mayor nivel para procesar mensajes que se transmiten al nodo. Para modificar el comportamiento, se puede hacer una clase que herede de _P2PInterface_ y sobreescribir los métodos de callback.
 
