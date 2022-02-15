@@ -1,18 +1,18 @@
-# Bitcoin Funtional Test Framework
+# Bitcoin Functional Test Framework
 
 ## Introducción al Framework de pruebas funcionales de Bitcoin
 
-El framework se compone de una serie de clases y funciones de ayuda (Helper Functions). En estas notas presentaremos las clases con sus atributos y funciones prinicipales (no en todos los casos se ponen todos los atributos o todos los métodos), para una referencia completa es importante revisar el código que se encuentra en el directorio [**_bitcoin/test/functionaltest_framework_**](https://github.com/bitcoin/bitcoin/tree/master/test/functional) del código fuente de _Bitcoin core_. 
+El framework se compone de una serie de clases y funciones de ayuda (Helper Functions). En estas notas presentaremos las clases con sus atributos y funciones prinicipales (no en todos los casos se ponen todos los atributos o todos los métodos), para una referencia completa es importante revisar el código que se encuentra en el directorio [**_bitcoin/test/functional/test_framework_**](https://github.com/bitcoin/bitcoin/tree/master/test/functional) del código fuente de _Bitcoin core_. 
 
-He encontrado que es posible ejecutar las pruebas desde _Visual Studio Code_ y también es posible hacer debbuging de las mismas directamente en el IDE lo que facilita el proceso.
+el framework de pruebas funcionales esta escrito en Python. He encontrado que las pruebas se pueden ejecutar desde _Visual Studio Code_ y también es posible hacer debbuging de las mismas directamente en el IDE, lo que facilita el proceso de construcción de pruebas.
 
 ## Clases principales
 
-A continuación se presentan las clases principales, toda prueba debe ser una clase que hereda de la clase _BitcoinTestFramework_, en el ejemplo, esta clase es _TestCase_.  Esta nueva clase _TestCase_ debe sobreescribir las funciones miembro (member functions) **_set_test_params_** y **_run_test_**. Del mismo modo, se pueden sobreescribir las funciones que se listan en la sección **_Operaciones a sobreescribir_**.  Esta es la clase prinicpal que controla la prueba y tiene 3 parámetros principales: 
+A continuación se presentan las clases principales, toda prueba debe ser una clase que hereda de la clase _BitcoinTestFramework_, en el ejemplo de la imagen anterior, esta clase es _TestCase_.  Esta nueva clase _TestCase_ debe sobreescribir las funciones miembro (member functions) **_set_test_params_** y **_run_test_**. Del mismo modo, se pueden sobreescribir las funciones que se listan en la sección **_Operaciones a sobreescribir_**.  Esta es la clase prinicpal que controla la prueba y tiene 3 parámetros principales: 
 
-* `_chain_` que por default esta configurada para _`regtest`_ 
-* `_setup_clean_chain_` que se usa para definir una cadena de bloques iniciando desde el _Genesis block_ si se configura como `true`, de lo contrario si la configuramos como `false` el framework cargará 200 bloques de una cadena preminada desde el disco, cuyas recompensas de minado se distribuyen entre 4 nodos. Cada nodo tiene 25 bloques con subsidio maduros (mas de 100 confirmaciones), igual a 25 x 50 = 1,250 bitcoins en su billetera.
-* `_nodes_`,  determina el número de nodos a instanciar para la prueba
+* _`chain`_ que por default esta configurada para _`regtest`_ 
+* _`setup_clean_chain`_ que se usa para definir una cadena de bloques iniciando desde el _Genesis block_ si se configura como `true`, de lo contrario si la configuramos como `false` el framework cargará 200 bloques de una cadena preminada desde el disco, cuyas recompensas de minado se distribuyen entre 4 nodos. Cada nodo tiene 25 bloques con subsidio maduros (mas de 100 confirmaciones), igual a 25 x 50 = 1,250 bitcoins en su billetera.
+* _`nodes`_,  determina el número de nodos a instanciar para la prueba
 
 
 ![Test Framework](img/test-framework-main-classes.png)
@@ -24,8 +24,8 @@ Ejemplo:
 def set_test_params(self):
         """Override test parameters for your individual test.
         This method must be overridden and num_nodes must be explicitly set."""
-        # Si inicias con una blockchain nueva ninguno de los nodos tendrá 
-        # bitcoin. 
+        # Iniciamos con una cadena limpia. Si inicias con una blockchain nueva, 
+        # ninguno de los nodos tendrá bitcoin. 
         self.setup_clean_chain = True
 
         # Vamos a configurar 3 nodos conectados por default
@@ -63,9 +63,9 @@ Ejemplo:
         self.sync_all(self.nodes[0:2])
 ```
 
-Como podemos ver en el primer diagrama de estas notas, la clase _BitcoinTestFramework_ tiene varios métodos que pueden ser útiles para llevar a cabo la lógica de nuestras pruebas, por ejemplo: _stop_node_, _restart_node_, _connect_nodes_, _disconnect_nodes_, generate* para generar bloques y sync* para sincronizar bloqes, mempool o ambos.
+Como podemos ver en el primer diagrama de estas notas, la clase _BitcoinTestFramework_ tiene varios métodos que pueden ser útiles para llevar a cabo la lógica de nuestras pruebas funcionales, por ejemplo: _stop_node_, _restart_node_, _connect_nodes_, _disconnect_nodes_, generate* para generar bloques y sync* para sincronizar bloqes, mempool o ambos.
 
-La función _run_test_ es en donde deberemos escribir la lógica principal de nuestra prueba, es aquí en donde el uso de las funciones mencionadas del _BitcoinTestFramework_ pueden ser utilizadas. 
+La función **_run_test_** es en donde deberemos escribir la lógica principal de nuestra prueba, es aquí en donde el uso de las funciones mencionadas del _BitcoinTestFramework_ pueden ser utilizadas. 
 
 ## Clases y funciones de apoyo
 
@@ -106,32 +106,35 @@ En estas notas no es posible describir cada una de las clases y funciones, pero 
 
 ## Interface de comunicación P2P
 
-Un componente muy importante de las pruebas funcionales es la clase **_P2PInterface_**, esta clase permite crear objetos para probar el comportamiento del protocolo P2P, como lo comentamos _messages.py_ contiene las definiciones primitivas de los objetos (CBlock, CTransaction, etc) junto con las envolturas a nivel de red (mensajes) para ellos (msg_block, msg_tx, etc). 
+Un componente muy importante de las pruebas funcionales es la clase **_P2PInterface_**, esta clase permite crear objetos para probar el comportamiento del protocolo P2P, como lo comentamos _messages.py_ contiene las definiciones primitivas de los objetos (CBlock, CTransaction, etc) junto con las envolturas a nivel de red (mensajes) para ellos (msg_block, msg_tx, etc). Puedes consultar la [documentación del protocolo de mensajes Bitcoin](https://en.bitcoin.it/wiki/Protocol_documentation#version)
 
 La case _P2PInterface_ hereda de la clase _P2PConnection_ y contiene un número importante de callbacks que pueden ser sobreescritos, además de contener diversas funciones de wait* y sync*.
 
 ![P2PInterface](img/P2PInterface-class.png)
 
-_P2PConnection_ es una clase que se utiliza para conectarse a las instancias bitcoind que corren los nodos (TestNode). P2PInterface contiene una lógica de mayor nivel para procesar mensajes que se transmiten al nodo. Para modificar el comportamiento, se puede hacer una clase que herede de _P2PInterface_ y sobreescribir los métodos de callback.
+_P2PConnection_ es una clase que se utiliza para conectarse a las instancias bitcoind que corren los nodos (_TestNode_). _P2PInterface_ contiene una lógica de mayor nivel para procesar mensajes que se transmiten al nodo. Para modificar el comportamiento, se puede hacer una clase que herede de _P2PInterface_ y sobreescribir los métodos de callback.
 
 Típicamente se utiliza una instancia que hereda de _P2PInterface_, si se quiere interactuar con un nodo bitoind en una forma particular y se pueda probar que el nodo se comporta de la forma esperada.  
 
-Las pruebas P2P manejan dos hilos de procesamiento (threads), uno maneja toda la comunicación de red con los procesos de bitcoind (Nodos) que están siendo probados en un loop basado en callbacks; el otro implementa la lógica de la prueba.
+Las pruebas P2P manejan dos hilos de procesamiento (threads), uno maneja toda la comunicación de red con los procesos de bitcoind (Nodos) que están siendo probados, en comunicación P2P, en un loop basado en callbacks; el otro implementa la lógica de la prueba.
 
 ## Sincronización
 
+Importante:
 * No esperes que las cosas sucedan en orden dentro de la lógica de la prueba
 * Utiliza el `p2p_lock`.
 * Utiliza `wait*`.
 * Utiliza `sync_with_ping` para sincorinizar una conexión.
 
-La solución mas obvia para la sincronización es espqerar a que todos terminen antes de continuar. Por lo que habras identificado una serie de funciones de wait_for* y wait_until en el framework. Es importante notar que no todas ellas serán seguras en cuanto a concurrencia y que por lo tanto te solicitarán pasar un parámetro de `lock`, para ello dentro del framework existe el siguiente código dentro de **_p2p.py_**:
+La solución mas obvia para la sincronización es esperar a que todos terminen antes de continuar. Por lo que habras identificado una serie de funciones de wait_for* y wait_until en el framework. 
+
+Dentro del framework existe el siguiente código dentro de **_p2p.py_**:
 
 ```python
     p2p_lock = threading.Lock()
 ```
  
-El `p2p_lock` es un mutex (MUTually EXclusive, una bandera en programación utilizada para obtener y liberar un objeto). este `lock` sincroniza todos los datos entre los objectos de conexión P2P y la lógica de la prueba. Siendo mas precisos, mientras se utilice el `p2p_lock` puedes estar seguro de que tu código es thread-safe accesando las estructuras de datos de tus nodos de conexión P2P. 
+El `p2p_lock` es un mutex (MUTually EXclusive, una bandera en programación utilizada para obtener y liberar un objeto). Este `lock` sincroniza todos los datos entre los objectos de conexión P2P y la lógica de la prueba. Siendo mas precisos, mientras se utilice el `p2p_lock` puedes estar seguro de que tu código es _thread-safe_ accesando las estructuras de datos de tus nodos de conexión P2P. 
 
 Ejemplo:
 ```python
@@ -151,5 +154,6 @@ Ejemplo:
     p2p_conn_blocksonly.wait_until(lambda: test_for_cmpctblock(block0))
 ```
 
+Hasta aqui he llegado por ahora, conforme pueda ir construyendo pruebas nuevas podré ir actualizando/expandiendo esta guía, el siguiente paso es empezar a hacer experimentos con el framework, te invito a que hagas lo mismo.
 
 
