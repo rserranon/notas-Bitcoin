@@ -8,16 +8,16 @@ He encontrado que es posible ejecutar las pruebas desde _Visual Studio Code_ y t
 
 ## Clases principales
 
-A continuación se presentan las clases principales, toda prueba debe ser una clase que hereda de la clase _BitcoinTestFramework_, en el ejemplo esta clase es _TestCase_.  Esta nueva clase _TestCase_ debe sobreescribir las funciones miembro (member functions) **set_test_params** y **run_test**. Del mismo modo, se pueden sobreescribir las funciones que se listan en la sección **Operaciones a sobreescribir**.  Esta es la clase prinicpal que controla la prueba y tiene 3 parámetros principales: 
+A continuación se presentan las clases principales, toda prueba debe ser una clase que hereda de la clase _BitcoinTestFramework_, en el ejemplo, esta clase es _TestCase_.  Esta nueva clase _TestCase_ debe sobreescribir las funciones miembro (member functions) **_set_test_params_** y **_run_test_**. Del mismo modo, se pueden sobreescribir las funciones que se listan en la sección **_Operaciones a sobreescribir_**.  Esta es la clase prinicpal que controla la prueba y tiene 3 parámetros principales: 
 
-* _chain_ que por default esta configurada para _`regtest`_ 
-* _setup_clean_chain_ que se usa para definir una cadena de bloques iniciando desde el _Genesis block_ si se configura como `true`, de lo contrario si la configuramos como `false` el framework cargará 200 bloques de una cadena preminada desde el disco, cuyas recompensas de minado se distribuyen entre 4 nodos. Cada nodo tiene 25 bloques con subsidio maduros (mas de 100 confirmaciones), igual a 25 x 50 = 1,250 bitcoins en su billetera.
-* _nodes_ que determina el número de nodos a instanciar para la prueba
+* `_chain_` que por default esta configurada para _`regtest`_ 
+* `_setup_clean_chain_` que se usa para definir una cadena de bloques iniciando desde el _Genesis block_ si se configura como `true`, de lo contrario si la configuramos como `false` el framework cargará 200 bloques de una cadena preminada desde el disco, cuyas recompensas de minado se distribuyen entre 4 nodos. Cada nodo tiene 25 bloques con subsidio maduros (mas de 100 confirmaciones), igual a 25 x 50 = 1,250 bitcoins en su billetera.
+* `_nodes_`,  determina el número de nodos a instanciar para la prueba
 
 
 ![Test Framework](img/test-framework-main-classes.png)
 
-Típicamente estos parámetros se configuran en la función **set_test_params**
+Típicamente estos parámetros se configuran en la función **_set_test_params_**
 
 Ejemplo:
 ``` python
@@ -37,7 +37,7 @@ def set_test_params(self):
         self.extra_args = [[], ["-logips"], []]
 ```
 
-Por lo general el framework establece una red de nodos lineal, es decir el nodo0 se conecta al nodo1 que a su vez se conecta la nodo2 y este ùltimo a su vez al nodo3. de la siguiente forma: `nodo0->nodo1->nodo2->nodo3`
+Por lo general el framework establece una red de nodos lineal, es decir el nodo0 se conecta al nodo1 que a su vez se conecta la nodo2 y este último a su vez al nodo3. de la siguiente forma: `nodo0->nodo1->nodo2->nodo3`
 
 La función _setup_newtork_ tiene la lógica de esta conexión lineal pero podemos sobreescribirla si deseamos crear otro tipo de conexiones, por ejemplo aislar un nodo temporalmente, o dividir la red en dos bloques de nodos cada una.
 
@@ -51,8 +51,8 @@ Ejemplo:
         If you do override this method, remember to start the nodes, assign
         them to self.nodes, connect them and then sync."""
 
-        # Típicamente ejecutamos el set up de los nodos, aunque también podríamos 
-        # sobreescribirlo si fuese necesario
+        # Típicamente primero ejecutamos el set up de los nodos, aunque también  
+        # podríamos sobreescribirlo si fuese necesario
         self.setup_nodes()
 
         # En este ejemplo solo estamos conectando el nodo0 con el nodo1
@@ -101,7 +101,7 @@ Adicionalmente los siguientes archivos cuentan con clases y funciones de ayuda:
 * wallet_util.py, funciones para pruebas de wallet.
 * wallet.py, una cartera (wallet) con funcionalidad limitada para remplazar la cartera en pruebas que no requieran la complilación de la cartera.
 
-En estas notas no es posible describir cada una de las clases y funciones, pero conforme las vaya utilizando podré documentar un poco de algunas de ellas. Gran parte de la curva de aprendizaje es entender todos los casos de uso que pueden probarse y saber que clases y funciones pueden ayudar con la prueba. Explorando las pruebas que ya existen es posible ver como se utilizan varias de estas funciones.
+En estas notas no es posible describir cada una de las clases y funciones, pero conforme las vaya utilizando podré documentar un poco de algunas de ellas. Gran parte de la curva de aprendizaje es entender todos los casos de uso que pueden probarse y saber que clases y funciones pueden ayudar con la prueba. Explorando las pruebas que ya existen es posible ver como se utilizan varias de estas funciones y que parámetros requieren.
 
 
 ## Interface de comunicación P2P
@@ -112,13 +112,44 @@ La case _P2PInterface_ hereda de la clase _P2PConnection_ y contiene un número 
 
 ![P2PInterface](img/P2PInterface-class.png)
 
-P2PConnection es una clase que se utiliza para conectarse a las instancias bitcoind que corren los nodos (TestNode). P2PInterface contiene una lógica de mayor nivel para procesar mensajes que se transmiten al nodo. Para modificar el comportamiento, se puede hacer una clase que herede de _P2PInterface_ y sobreescribir los métodos de callback.
+_P2PConnection_ es una clase que se utiliza para conectarse a las instancias bitcoind que corren los nodos (TestNode). P2PInterface contiene una lógica de mayor nivel para procesar mensajes que se transmiten al nodo. Para modificar el comportamiento, se puede hacer una clase que herede de _P2PInterface_ y sobreescribir los métodos de callback.
 
-Típicamente se utiliza una instancia que hereda de _P2PInterface_ si se quiere interactuar con un nodo bitoind en una forma particular y se pueda probar que el nodo se comporta de la forma esperada.  
+Típicamente se utiliza una instancia que hereda de _P2PInterface_, si se quiere interactuar con un nodo bitoind en una forma particular y se pueda probar que el nodo se comporta de la forma esperada.  
 
 Las pruebas P2P manejan dos hilos de procesamiento (threads), uno maneja toda la comunicación de red con los procesos de bitcoind (Nodos) que están siendo probados en un loop basado en callbacks; el otro implementa la lógica de la prueba.
 
+## Sincronización
 
+* No esperes que las cosas sucedan en orden dentro de la lógica de la prueba
+* Utiliza el `p2p_lock`.
+* Utiliza `wait*`.
+* Utiliza `sync_with_ping` para sincorinizar una conexión.
+
+La solución mas obvia para la sincronización es espqerar a que todos terminen antes de continuar. Por lo que habras identificado una serie de funciones de wait_for* y wait_until en el framework. Es importante notar que no todas ellas serán seguras en cuanto a concurrencia y que por lo tanto te solicitarán pasar un parámetro de `lock`, para ello dentro del framework existe el siguiente código dentro de **_p2p.py_**:
+
+```python
+    p2p_lock = threading.Lock()
+```
+ 
+El `p2p_lock` es un mutex (MUTually EXclusive, una bandera en programación utilizada para obtener y liberar un objeto). este `lock` sincroniza todos los datos entre los objectos de conexión P2P y la lógica de la prueba. Siendo mas precisos, mientras se utilice el `p2p_lock` puedes estar seguro de que tu código es thread-safe accesando las estructuras de datos de tus nodos de conexión P2P. 
+
+Ejemplo:
+```python
+    # Expect a getblocktxn message.
+    with p2p_lock:
+        assert "getblocktxn" in test_node.last_message
+```
+
+Las funciones wait_for* son abundantes en la _P2PInterface_ y por lo general son muy utilizadas para comprobar comportamineto esperado en las pruebas funcionales. Incluyen por ejemplo `wait_for_tx`, que perrmite asegurar que una conexión P2P recibe una transacción (por _tx hash_), `wait_for_disconnect`, que permite cerificar que el nodo esta cerrando una conexión por mal comportamineto de sus pares.
+
+Los `wait_until` permiten a tu prueba esperar por un predicado arbitrario para evaluar a `verdadero` (true).
+
+Ejemplo:
+
+```python
+    p2p_conn_blocksonly.send_message(msg_getdata([CInv(MSG_CMPCT_BLOCK, block0.sha256)]))
+    p2p_conn_blocksonly.wait_until(lambda: test_for_cmpctblock(block0))
+```
 
 
 
