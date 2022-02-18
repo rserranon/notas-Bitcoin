@@ -8,11 +8,12 @@ el framework de pruebas funcionales esta escrito en Python. He encontrado que la
 
 ## Clases principales
 
-A continuación, se presentan las clases principales, toda prueba debe ser una clase que hereda de la clase _BitcoinTestFramework_, en el ejemplo de la imagen anterior, esta clase es _TestCase_.  Esta nueva clase _TestCase_ debe sobrescribir las funciones miembro (member functions) **_set_test_params_** y **_run_test_**. Del mismo modo, se pueden sobrescribir las funciones que se listan en la sección **_Operaciones a sobrescribir_**.  Esta es la clase que controla la prueba y tiene 3 parámetros principales: 
+A continuación, se presentan las clases principales, toda prueba debe ser una clase que hereda de la clase _BitcoinTestFramework_, en el ejemplo de la imagen mas abajo, esta clase es _TestCase_.  Esta nueva clase _TestCase_ debe sobrescribir las funciones miembro (member functions) **_set_test_params_** y **_run_test_**. Del mismo modo, se pueden sobrescribir las funciones que se listan en la sección **_Operaciones a sobrescribir_**.  _TestCase_ es la clase que controla la prueba y tiene estos parámetros principales: 
 
-* _`chain`_ que por default esta configurada para _`regtest`_ 
+* _`chain`_ que por defecto esta configurada para _`regtest`_ 
 * _`setup_clean_chain`_ que se usa para definir una cadena de bloques iniciando desde el _Genesis block_ si se configura como `true`, de lo contrario si la configuramos como `false` el framework cargará 200 bloques de una cadena pre minada desde el disco, cuyas recompensas de minado se distribuyen entre 4 nodos. Cada nodo tiene 25 bloques con subsidio maduros (mas de 100 confirmaciones), igual a 25 x 50 = 1,250 bitcoins en su billetera.
-* _`nodes`_,  determina el número de nodos a instanciar para la prueba
+* _`num_nodes`, Número de _TestNode_ a instanciar.
+* _`nodes`_,  lista de los nodos _TestNode_ instanciados para la prueba.
 
 
 ![Test Framework](img/test-framework-main-classes.png)
@@ -28,7 +29,7 @@ def set_test_params(self):
         # ninguno de los nodos tendrá bitcoin. 
         self.setup_clean_chain = True
 
-        # Vamos a configurar 3 nodos conectados por default
+        # Vamos a configurar 3 nodos (TestNode) conectados por default
         self.num_nodes = 3
 
         # Usa self.extra_args para cambiar los argumentos de línea de comando para
@@ -86,6 +87,7 @@ Ejemplo de como se puede construir una transacción:
     tx.vin = [CTxIn(COutPoint(int(utxo["txid"], 16), utxo["vout"]), REDEEM_SCRIPT)]
     tx.vout = [CTxOut(int(utxo["amount"] * COIN), P2SH)]
 ```
+Nota importante, al construir transacciones es primordial que determines si tus transacciones van a ser estándar o no, en caso de que no, deberás iniciar el nodo con el parametro `self.extra_args = [["-acceptnonstdtxn=1"]]` en la función _set_test_params_.
 
 Adicionalmente los siguientes archivos cuentan con clases y funciones de ayuda:
 * adress.py, encode y decode de direcciones Bitcoin.
@@ -101,7 +103,7 @@ Adicionalmente los siguientes archivos cuentan con clases y funciones de ayuda:
 * wallet_util.py, funciones para pruebas de wallet.
 * wallet.py, una cartera (wallet) con funcionalidad limitada para remplazar la cartera en pruebas que no requieran la compilación de la cartera.
 
-En estas notas no es posible describir cada una de las clases y funciones, pero conforme las vaya utilizando podré documentar un poco de algunas de ellas. Gran parte de la curva de aprendizaje es entender todos los casos de uso que pueden probarse y saber que clases y funciones pueden ayudar con la prueba. Explorando las pruebas que ya existen es posible ver como se utilizan varias de estas funciones y que parámetros requieren.
+En estas notas no es posible describir cada una de las clases y funciones, pero conforme las vaya utilizando podré documentar un poco de algunas de ellas. Gran parte de la curva de aprendizaje del framework, es entender todos los casos de uso que pueden probarse, las reglas y bips de Bitcoin, así como  saber que clases y funciones pueden ayudar con la prueba. Explorando las pruebas que ya existen es posible ver como se utilizan varias de estas funciones y que parámetros requieren. 
 
 
 ## Interface de comunicación P2P
@@ -154,6 +156,6 @@ Ejemplo:
     p2p_conn_blocksonly.wait_until(lambda: test_for_cmpctblock(block0))
 ```
 
-Hasta aquí he llegado por ahora, conforme pueda ir construyendo pruebas nuevas podré ir actualizando/expandiendo esta guía, el siguiente paso es empezar a hacer experimentos con el framework, te invito a que hagas lo mismo.
+Hasta aquí he llegado por ahora, conforme pueda ir construyendo pruebas nuevas podré ir actualizando/expandiendo esta guía, el siguiente paso es empezar a hacer experimentos con el framework, te invito a que hagas lo mismo y si es posible me ayudes a complementar esta guía.
 
 
