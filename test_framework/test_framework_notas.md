@@ -87,9 +87,11 @@ Ejemplo de como se puede construir una transacción:
     tx.vin = [CTxIn(COutPoint(int(utxo["txid"], 16), utxo["vout"]), REDEEM_SCRIPT)]
     tx.vout = [CTxOut(int(utxo["amount"] * COIN), P2SH)]
 ```
-Nota importante, al construir transacciones es primordial que determines si tus transacciones van a ser estándar o no, en caso de que no, deberás iniciar el nodo con el parametro `self.extra_args = [["-acceptnonstdtxn=1"]]` en la función _set_test_params_.
+Nota, al construir transacciones es primordial que determines si tus transacciones van a ser estándar o no, en caso de que no, deberás iniciar el nodo con el parametro `self.extra_args = [["-acceptnonstdtxn=1"]]` en la función _set_test_params_. 
 
-Adicionalmente los siguientes archivos cuentan con clases y funciones de ayuda:
+Es importante considerar otros parámetros al activar los nodos, por ejemplo, `"-testactivationheight=segwit@{SEGWIT_HEIGHT}"` sirve para activar _SegWit_ desde un número determinado de bloque, de esta forma puedes crear pruebas antes de la activación y después de la activación. Otra característica que se puede configurar desde los parámetros de la línea de comando, es la activación del BIP-068 _CheckSequenceVerify_ `'-testactivationheight=csv@432'`, la lista completa de parámetros la puedes consultar en [src/init.cpp](https://github.com/bitcoin/bitcoin/blob/master/src/init.cpp#L396) y en [src/chainparamsbase.cpp](https://github.com/bitcoin/bitcoin/blob/623745ca74cf3f54b474dac106f5802b7929503f/src/chainparamsbase.cpp#L18)
+
+Adicionalmente, los siguientes archivos del framework cuentan con clases y funciones de ayuda:
 * adress.py, encode y decode de direcciones Bitcoin.
 * blocktools.py, funciones para manipular bloques y transacciones.
 * descriptors.py, funciones relacionadas con output descriptors.
@@ -103,7 +105,7 @@ Adicionalmente los siguientes archivos cuentan con clases y funciones de ayuda:
 * wallet_util.py, funciones para pruebas de wallet.
 * wallet.py, una cartera (wallet) con funcionalidad limitada para remplazar la cartera en pruebas que no requieran la compilación de la cartera.
 
-En estas notas no es posible describir cada una de las clases y funciones, pero conforme las vaya utilizando podré documentar un poco de algunas de ellas. Gran parte de la curva de aprendizaje del framework, es entender todos los casos de uso que pueden probarse, las reglas y bips de Bitcoin, así como  saber que clases y funciones pueden ayudar con la prueba. Explorando las pruebas que ya existen es posible ver como se utilizan varias de estas funciones y que parámetros requieren. 
+En estas notas no es posible describir cada una de las clases y funciones, pero conforme las vaya utilizando podré documentar un poco de algunas de ellas. Gran parte de la curva de aprendizaje del framework, es entender todos los casos de uso que pueden probarse, las reglas y _BIPs_ de **Bitcoin**, así como  saber que clases y funciones pueden ayudar con la prueba. Explorando las pruebas que ya existen, es posible ver como se utilizan varias de estas funciones y que parámetros requieren. 
 
 
 ## Interface de comunicación P2P
