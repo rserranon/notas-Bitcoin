@@ -89,6 +89,8 @@ Ejemplo de como se puede construir una transacción:
 ```
 Nota, al construir transacciones es primordial que determines si tus transacciones van a ser estándar o no, en caso de que no, deberás iniciar el nodo con el parametro `self.extra_args = [["-acceptnonstdtxn=1"]]` en la función _set_test_params_. 
 
+Aquí puedes ver un ejemplo completo de [cómo crear una transacción]()
+
 Es importante considerar otros parámetros al activar los nodos, por ejemplo, `"-testactivationheight=segwit@{SEGWIT_HEIGHT}"` sirve para activar _SegWit_ desde un número determinado de bloque, de esta forma puedes crear pruebas antes de la activación y después de la activación. Otra característica que se puede configurar desde los parámetros de la línea de comando, es la activación del BIP-068 _CheckSequenceVerify_ `'-testactivationheight=csv@432'`, la lista completa de parámetros la puedes consultar en [src/init.cpp](https://github.com/bitcoin/bitcoin/blob/master/src/init.cpp#L396) y en [src/chainparamsbase.cpp](https://github.com/bitcoin/bitcoin/blob/623745ca74cf3f54b474dac106f5802b7929503f/src/chainparamsbase.cpp#L18)
 
 Adicionalmente, los siguientes archivos del framework cuentan con clases y funciones de ayuda:
@@ -157,6 +159,8 @@ Ejemplo:
     p2p_conn_blocksonly.send_message(msg_getdata([CInv(MSG_CMPCT_BLOCK, block0.sha256)]))
     p2p_conn_blocksonly.wait_until(lambda: test_for_cmpctblock(block0))
 ```
+
+[Creando transacciones](creando_transacciones)
 
 Hasta aquí he llegado por ahora, conforme pueda ir construyendo pruebas nuevas podré ir actualizando/expandiendo esta guía, el siguiente paso es empezar a hacer experimentos con el framework, te invito a que hagas lo mismo y si es posible me ayudes a complementar esta guía.
 
