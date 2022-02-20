@@ -1,6 +1,6 @@
 # Crear transacciones
 
-Lo primero a comentar es que es muy importante entender como funcionan las transacciones en Bitcoin para poder crear transacciones. Para ello te recomiendo el libro de Mastering Bitcoin de Andreas Antonopoulos. Esta seccion la iremos complementando conforme yo mismo pueda hacer mas pruebas con cada tipo de transacción.
+Lo primero a comentar es que es muy importante entender como funcionan las transacciones en Bitcoin antes de pretender crear transacciones. Para ello te recomiendo el libro de Mastering Bitcoin de Andreas Antonopoulos. Esta seccion la iremos complementando conforme yo mismo pueda hacer mas pruebas con cada tipo de transacción. Por lo pronto empezaremos con una de ellas.
 
 ## P2PKH Pago a un Hash de una Llave Pública (Pay to Public Key Hash)
 
@@ -11,10 +11,10 @@ Para hacer el pago a un hash de una lláve pública primero tenemos que obetener
     pubkey = self.nodes[0].getaddressinfo(address)['pubkey']
 ```
 
-A continuación lo que requerimos es el hash de la llave pública. Y aprovechamos para usar una función de ayuda que nos crea el scriptPubKey,Script de Apertura, (Unlocking Script) que utilizaremos en la transacción.
+A continuación lo que requerimos es el hash de la llave pública. Y aprovechamos para usar una función de ayuda que nos crea el scriptPubKey,Script de Cierre, (Locking Script) que utilizaremos en la transacción.
 
 ```python
-    pubkey_hash = hash160(pubkey.encode()) # .encode()
+    pubkey_hash = hash160(pubkey.encode()) # es necesario convertir a bytes
     script_pubkey = keyhash_to_p2pkh_script(pubkey_hash)
 ```
 
