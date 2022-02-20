@@ -160,7 +160,7 @@ Ejemplo:
     p2p_conn_blocksonly.wait_until(lambda: test_for_cmpctblock(block0))
 ```
 
-[Creando transacciones](creando_transacciones)
+* [Creando transacciones](creando_transacciones.md)
 
 Hasta aquí he llegado por ahora, conforme pueda ir construyendo pruebas nuevas podré ir actualizando/expandiendo esta guía, el siguiente paso es empezar a hacer experimentos con el framework, te invito a que hagas lo mismo y si es posible me ayudes a complementar esta guía.
 

@@ -58,7 +58,7 @@ Firmemos y enviemos la transacción. Y para que se procese minemos un bloque.
 
 Nuestra transaccion ya ha sido añadida al mempool y posteriormente minada al generar un bloque.
 
-En el siguiente link puedes encontrar [el caso completo de prueba con algunas instrucciones adicionales](mi_ejemplo_tx_P2PkH.py), creadas para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo lo tienes que copiar al directorio /src/test/functional de Bitcoin core.
+En el siguiente link puedes encontrar [el caso completo de prueba con algunas instrucciones adicionales](mi_ejemplo_tx_P2PKH.py), creadas para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo lo tienes que copiar al directorio /src/test/functional de Bitcoin core.
 
 Espero que esto te haya ayudado a animarte a usar el framework para crear transacciones y casos de prueba.
 
