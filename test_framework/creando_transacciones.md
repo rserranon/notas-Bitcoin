@@ -23,7 +23,7 @@ Como la transacción va dirigida a una dirección Bitcoin en particular, la gene
 ```python
     destination_address = byte_to_base58(pubkey_hash, 111)
 ```
-Primero generemos un bloque maduro(101 confirmaciones, COINBASE_MATURITY + 1) que nos pague la recompaensa del Coinbase y seleccionesmos el UTXO disponible.
+Primero generemos un bloque maduro(101 confirmaciones, COINBASE_MATURITY + 1) que nos pague la recompaensa del Coinbase y seleccionamos el UTXO disponible.
 
 ```python
     blocks = self.generate(self.nodes[0], COINBASE_MATURITY + 1)
@@ -32,7 +32,7 @@ Primero generemos un bloque maduro(101 confirmaciones, COINBASE_MATURITY + 1) qu
     utxo = utxos[0]
 ```
 
-Ahora si podemos empezar a crear la transacción. Primero calculemos el monto total a enviar después del fee mínimo que soporta el nodo. Recordemos que los montos de las transaciones siempre se denominan en satoshis, por eso multiplicamos por COIN (que es igual a 100,000,000 de satoshis por cada BTC).
+Ahora si podemos empezar a crear la transacción. Primero, calculemos el monto total a enviar después de restarle el fee mínimo que soporta el nodo. Recordemos que los montos de las transaciones siempre se denominan en satoshis, por eso multiplicamos por COIN (que es igual a 100,000,000 de satoshis por cada BTC).
 
 ```python
     self.relayfee = self.nodes[0].getnetworkinfo()["relayfee"]
@@ -40,7 +40,7 @@ Ahora si podemos empezar a crear la transacción. Primero calculemos el monto to
     value = int((utxo["amount"] - self.relayfee) * COIN)
 ```
 
-Para crear la transaccion utilizaremos las primitivas que se encuentran en el archivo `messages.py`.
+Para crear la transaccion utilizaremos las clases primitivas que se encuentran en el archivo `messages.py`: _Ctransaction_, _CoutPoint_, _CTxIn_ y _CTxOut_.
 
 ```python
     tx = CTransaction()
@@ -48,7 +48,7 @@ Para crear la transaccion utilizaremos las primitivas que se encuentran en el ar
     tx.vout = [CTxOut(value, script_pubkey)]
     tx.rehash() # hacer el hasing de la Tx
 ```
-Firmemos y enviemos la transacción. Y para que se procese minemos un bloque.
+Firmemos y enviemos la transacción. Y para que se procese, minemos un bloque.
 
 ```python
     tx_hex = self.nodes[0].signrawtransactionwithwallet(tx.serialize().hex())["hex"]
@@ -58,8 +58,8 @@ Firmemos y enviemos la transacción. Y para que se procese minemos un bloque.
 
 Nuestra transaccion ya ha sido añadida al mempool y posteriormente minada al generar un bloque.
 
-En el siguiente link puedes encontrar [el caso completo de prueba con algunas instrucciones adicionales](mi_ejemplo_tx_P2PKH.py), creadas para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo lo tienes que copiar al directorio /src/test/functional de Bitcoin core.
+En el siguiente link puedes encontrar [el caso completo de prueba con algunas instrucciones adicionales](mi_ejemplo_tx_P2PKH.py), creadas para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo lo tienes que copiar al directorio /src/test/functional de Bitcoin core para que pueda tener acceso a las librerías del framework.
 
 Espero que esto te haya ayudado a animarte a usar el framework para crear transacciones y casos de prueba.
 
-Conforme vaya creando casos nuevos ire actualizando esta guía.
+Conforme vaya creando casos nuevos ire actualizando esta guía, si te interesa ayudar puedes mandarme un mensaje por twitter a bitcoin a @Bitcoin-1o1.

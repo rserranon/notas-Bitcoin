@@ -12,8 +12,7 @@ del framework.
 
 
 # Evitar importaciones wildcard *
-from test_framework.blocktools import (create_block, create_coinbase, 
-        COINBASE_MATURITY, key_to_p2pk_script, script_to_p2wsh_script)
+from test_framework.blocktools import COINBASE_MATURITY
 from test_framework.messages import CTransaction, CTxIn, CTxOut, COutPoint, COIN
 from test_framework.script_util import keyhash_to_p2pkh_script
 
