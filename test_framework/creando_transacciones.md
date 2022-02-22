@@ -58,8 +58,24 @@ Firmemos y enviemos la transacción. Y para que se procese, minemos un bloque.
 
 Nuestra transaccion ya ha sido añadida al mempool y posteriormente minada al generar un bloque.
 
-En el siguiente link puedes encontrar [el caso completo de prueba con algunas instrucciones adicionales](mi_ejemplo_tx_P2PKH.py), creadas para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo lo tienes que copiar al directorio /src/test/functional de Bitcoin core para que pueda tener acceso a las librerías del framework.
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PKH.py) con algunas instrucciones adicionales, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo lo tienes que copiar al directorio /src/test/functional de Bitcoin core para que pueda tener acceso a las librerías del framework.
+
+## P2SH Pago a un Hash de una Script (Pay to Script Hash)
+
+El proceso para crear una transacción P2SH es bastante similar, la princupal diferencia es que en lugar de obtener la dirección de destino de los bitcoins a través del hash de una llave pública, lo hacemos con el hash de un script. También es importante notar que la conversión a base58 para obtener la dirección utiliza un código de versión de bytes distinto para _regtest_ y para el hash del script que es igual a _196_. La referencia completa de [como utilizar los bytes de versión la puedes consultar aquí](https://en.bitcoin.it/wiki/Base58Check_encoding#Encoding_a_Bitcoin_address).
+
+En esta sección de código puedes ver como se realiza la construcción del Script, el hashing, la conversión a base58 para obtener la dirección de destino y el armado del scriptPubKey.
+
+```python
+        script = CScript([OP_TRUE])
+        script_hash = hash160(script)
+        destination_address = byte_to_base58(script_hash, 196) # 196, Bitcoin testnet script hash
+        self.log.info("Destination Address: {}".format(destination_address))
+        script_pubkey = scripthash_to_p2sh_script(script_hash)
+```
+
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2SH.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo lo tienes que copiar al directorio /src/test/functional de Bitcoin Core para que pueda tener acceso a las librerías del framework.
 
 Espero que esto te haya ayudado a animarte a usar el framework para crear transacciones y casos de prueba.
 
-Conforme vaya creando casos nuevos ire actualizando esta guía, si te interesa ayudar puedes mandarme un mensaje por twitter a bitcoin a @Bitcoin-1o1.
+Conforme vaya creando casos nuevos ire actualizando esta guía, si te interesa ayudar puedes mandarme un mensaje por twitter a @Bitcoin-1o1.

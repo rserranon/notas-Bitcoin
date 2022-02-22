@@ -2,7 +2,7 @@
 # Copyright (c) 2017-2019 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Un ejemplo de como crear transacciones P2PKH, firmarlas y publicarlas
+"""Un ejemplo de como crear transacciones P2SH, firmarlas y publicarlas
 utilizando el framework funcional.
 Trabajo en proceso, sin garantía de funcionar, sigo aprendiendo de Bitcoin y
 del framework.
@@ -13,8 +13,10 @@ del framework.
 
 # Evitar importaciones wildcard *
 from test_framework.blocktools import COINBASE_MATURITY
-from test_framework.messages import CTransaction, CTxIn, CTxOut, COutPoint, COIN
-from test_framework.script_util import keyhash_to_p2pkh_script
+from test_framework.messages import (CTransaction, CTxIn, CTxOut, COutPoint,
+                                     COIN)
+from test_framework.script import OP_0, OP_TRUE, CScript
+from test_framework.script_util import scripthash_to_p2sh_script
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import assert_equal
@@ -52,25 +54,27 @@ class ExampleTest(BitcoinTestFramework):
         self.log.info("UTXOs selecionado: {}".format(utxo))
 
 
-        address = self.nodes[0].getnewaddress()
-        pubkey = self.nodes[0].getaddressinfo(address)['pubkey']
-        pubkey_hash = hash160(pubkey.encode()) # .encode() se requiere para convertir a bytes
-        script_pubkey = keyhash_to_p2pkh_script(pubkey_hash) 
-        # Nuestro Script en un Pay to Public to Key Hash
-        # OP_DUP OP_HASH160 <pubkey_hash> OP_EQUALVERIFY OP_CHECKSIG
-        self.log.info("P2SH Script: {}".format(repr(script_pubkey)))
-        # 111 = version bytes de testnet para la conversion a base 58
+        # Crear el script
+        script = CScript([OP_TRUE])
+        # Obtener el hasd del script
+        script_hash = hash160(script)
+        # Obtener la dirección de destino de los Bitcoins convitiendo a Base58
+        # el hash del script (script_hash) 
+        # 196 = version bytes de testnet para la conversion a base58 de una dirección P2SH
         # fuente: https://en.bitcoin.it/wiki/Base58Check_encoding#Encoding_a_Bitcoin_address
-        destination_address = byte_to_base58(pubkey_hash, 111) 
-        # La dirección de destino es el pubkey_hash del pubkey en base58    
-        self.log.info("Destination address: {}".format(destination_address))
-
+        destination_address = byte_to_base58(script_hash, 196) # 196, Bitcoin testnet script hash
+        self.log.info("Destination Address: {}".format(destination_address))
+        # Armar el script_pubkey con el hash del script
+        # El script debe ser: OP_HASH160 <hash> OP_EQUAL
+        script_pubkey = scripthash_to_p2sh_script(script_hash)
+        self.log.info("P2SH Script: {}".format(repr(script_pubkey)))    
+        
         self.log.info("Crear la transacción")
         self.relayfee = self.nodes[0].getnetworkinfo()["relayfee"]
         # COIN = 100,000,000 de sats por BTC
         value = int((utxo["amount"] - self.relayfee) * COIN)
         # Crear la transacción, las entradas y las salidas con ayuda de las
-        # clases primitivs de message.py
+        # clases primitivas de message.py
         tx = CTransaction()
         tx.vin = [CTxIn(COutPoint(int(utxo["txid"], 16), utxo["vout"]))]
         tx.vout = [CTxOut(value, script_pubkey)]
@@ -106,10 +110,7 @@ class ExampleTest(BitcoinTestFramework):
         # de destino
         transactions = self.nodes[0].listtransactions()
         assert_equal(transactions[8]["address"], destination_address)
-        # self.nodes[0].importaddress(destination_address)
-
-
-
+        
 
         # TODO entender porque nuestra transacción no aparece en los UTXOs 
         # de esta wallet
@@ -118,6 +119,8 @@ class ExampleTest(BitcoinTestFramework):
         self.log.info("UTXOs disponibles: {}".format(utxos))
         # Sin embargo si aparece al escanear el UTXOs set usando el descriptor
         utxo_esperado = self.nodes[0].scantxoutset(action="start", scanobjects=[{'desc': descriptor}])
+        # La dirección de destino coincide con la dirección de descriptor
+        self.log.info("UTXO esperado: {}".format(utxo_esperado['unspents'][0]['desc']))
 
 if __name__ == '__main__':
     ExampleTest().main()
