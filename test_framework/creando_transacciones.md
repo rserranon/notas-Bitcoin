@@ -78,4 +78,4 @@ En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx
 
 Espero que esto te haya ayudado a animarte a usar el framework para crear transacciones y nuevos casos de prueba.
 
-Conforme vaya creando casos nuevos iré actualizando esta guía, si te interesa ayudar o hacer algún comentario puedes mandarme un mensaje por twitter a @Bitcoin-1o1.
+Conforme vaya creando casos nuevos iré actualizando esta guía, si te interesa ayudar o hacer algún comentario puedes mandarme un mensaje por twitter a @Bitcoin_1o1.
