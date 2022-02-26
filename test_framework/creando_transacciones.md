@@ -1,6 +1,21 @@
 # Crear transacciones
 
-Lo primero a comentar, es que es muy importante entender como funcionan las transacciones en Bitcoin antes de pretender crear transacciones. Para ello, te recomiendo el libro de Mastering Bitcoin de Andreas Antonopoulos. Esta sección la iremos complementando conforme yo mismo pueda hacer mas pruebas con cada tipo de transacción. Por lo pronto empezaremos con unas de ellas.
+Lo primero a comentar, es que es muy importante entender como funcionan las transacciones en Bitcoin antes de pretender crear transacciones. Para ello, te recomiendo el libro de Mastering Bitcoin de Andreas Antonopoulos. Esta sección la iremos complementando conforme yo mismo pueda hacer mas pruebas con cada tipo de transacción. Por lo pronto empezaremos con algunas de ellas.
+
+En esta tabla podemos ver todos los tipos de salidas (outputs) que se pueden generar, iremos completando poco a poco los ejemplos para cubrir toda la tabla.
+
+| vout               	| scriptPubKey                                                        	| scriptSig                   	| redeem<br>script 	| witness                                	|
+|--------------------	|---------------------------------------------------------------------	|-----------------------------	|------------------	|----------------------------------------	|
+| P2PK               	| <pubKey><br><br>OP_CHECKSIG                                         	| <signature>                 	|                  	|                                        	|
+| P2PKH              	| OP_DUP<br>OP_HASH160<br>pubKeyHash<br>OP_EQUALVERIFY<br>OP_CHECKSIG 	| signature<br>public key     	|                  	|                                        	|
+| P2SH               	| OP_HASH160<br>scriptHash<br>OP_EQUAL                                	| data pushes<br>redem script 	| arbitrary        	|                                        	|
+| P2WPKH             	| 0<br>pubKeyHash                                                     	|                             	|                  	| signature<br>public key                	|
+| P2WSH              	| 0<br>witnessScriptHash                                              	|                             	|                  	| data pushes<br>witness script          	|
+| P2WSH P2WPKH       	| OP_HASH160<br>redemScriptHash<br>OP_EQUAL                           	| redem script                	| 0<br>pubKeyHash  	| signature<br>public key                	|
+| P2SH P2WSH         	| OP_HASH160<br>redemScriptHash                                       	| redem script                	| 0<br>script hash 	| data pushes<br>witness script          	|
+| P2TR (key path)    	| 1<br>public key                                                     	|                             	|                  	| signature                              	|
+| P2TR (script path) 	| 1<br>public key                                                     	|                             	|                  	| data pushes<br>script<br>control block 	|
+
 
 ## P2PKH Pago a un Hash de una Llave Pública (Pay to Public Key Hash)
 
