@@ -58,7 +58,7 @@ Firmemos y enviemos la transacción. Y para que se procese, minemos un bloque.
 
 Nuestra transacción ya ha sido añadida al mempool y posteriormente minada al generar un bloque.
 
-En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PKH.py) con algunas instrucciones adicionales, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core para que pueda tener acceso a las librerías del framework.
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PKH.py) con algunas instrucciones adicionales, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
 
 ## P2SH Pago a un Hash de un Script (Pay to Script Hash)
 
@@ -74,7 +74,33 @@ En esta sección de código puedes ver como se realiza la construcción del Scri
         script_pubkey = scripthash_to_p2sh_script(script_hash)
 ```
 
-En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2SH.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core para que pueda tener acceso a las librerías del framework.
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2SH.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
+
+## MultiSig, Envío a una dirección multifirma
+
+Para el caso de envío a una dirección multifirma utilizaremos 3 nodos para crear distintas llaves públicas.
+
+```python
+node0, node1, node2 = self.nodes
+    publicK0 = node0.getaddressinfo(node0.getnewaddress())['pubkey']
+    publicK1 = node1.getaddressinfo(node1.getnewaddress())['pubkey']
+    publicK2 = node2.getaddressinfo(node2.getnewaddress())['pubkey']
+    keys=[publicK0, publicK1, publicK2]
+```
+Una vez que tenemos las llaves en la lista `keys` procedemos a crear la multifirma. Aprovechamos también para guardar la dirección de destino y el descriptor que nos servirá para obtener la dirección de la transacción y del UTXO mas adelante y verificar que coincide con la de destino, **aqui es a donde se tranferiran nuestros fondos de Bitcoin.**
+
+```python
+    multi_sig = node0.createmultisig(2, keys, 'legacy')
+    destination_addr = multi_sig['address']
+    descriptor = multi_sig['descriptor']
+```
+Finalmente hacemos el envío de la transacción a la dirección de destino.
+
+```python
+    txid = node0.sendtoaddress(destination_addr, 40)
+```
+
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_MultiSig.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
 
 Espero que esto te haya ayudado a animarte a usar el framework para crear transacciones y nuevos casos de prueba.
 
