@@ -6,7 +6,7 @@ En esta tabla podemos ver todos los tipos de salidas (outputs) que se pueden gen
 
 | vout               	| scriptPubKey                                                        	| scriptSig                   	| redeem<br>script 	| witness                                	|
 |--------------------	|---------------------------------------------------------------------	|-----------------------------	|------------------	|----------------------------------------	|
-| P2PK               	| <pubKey><br><br>OP_CHECKSIG                                         	| <signature>                 	|                  	|                                        	|
+| P2PK               	| pubKey<br><br>OP_CHECKSIG                                           	| signature                   	|                  	|                                        	|
 | P2PKH              	| OP_DUP<br>OP_HASH160<br>pubKeyHash<br>OP_EQUALVERIFY<br>OP_CHECKSIG 	| signature<br>public key     	|                  	|                                        	|
 | P2SH               	| OP_HASH160<br>scriptHash<br>OP_EQUAL                                	| data pushes<br>redem script 	| arbitrary        	|                                        	|
 | P2WPKH             	| 0<br>pubKeyHash                                                     	|                             	|                  	| signature<br>public key                	|
