@@ -8,3 +8,4 @@ Este repositorio contiene algunas notas personales sobre mi aprendizaje de Bitco
 ####  Ejemplos en Python:
 * [Ejemplo P2PKH](test_framework/mi_ejemplo_tx_P2PKH.py)
 * [Ejemplo P2SH](test_framework/mi_ejemplo_tx_P2SH.py)
+* [Ejemplo MultiSig](test_framework/mi_ejemplo_tx_MultiSig.py)
