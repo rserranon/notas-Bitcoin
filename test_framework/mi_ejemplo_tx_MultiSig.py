@@ -16,7 +16,6 @@ from test_framework.blocktools import COINBASE_MATURITY
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import assert_equal
-from test_framework.script import CScript
 
 # Mi clase de prueba hereda de BitcoinTestFramework
 class ExampleTest(BitcoinTestFramework):

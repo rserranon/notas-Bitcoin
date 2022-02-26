@@ -58,7 +58,7 @@ Firmemos y enviemos la transacción. Y para que se procese, minemos un bloque.
 
 Nuestra transacción ya ha sido añadida al mempool y posteriormente minada al generar un bloque.
 
-En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PKH.py) con algunas instrucciones adicionales, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `/src/test/functional` de Bitcoin Core para que pueda tener acceso a las librerías del framework.
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PKH.py) con algunas instrucciones adicionales, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core para que pueda tener acceso a las librerías del framework.
 
 ## P2SH Pago a un Hash de un Script (Pay to Script Hash)
 
@@ -74,7 +74,7 @@ En esta sección de código puedes ver como se realiza la construcción del Scri
         script_pubkey = scripthash_to_p2sh_script(script_hash)
 ```
 
-En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2SH.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `/src/test/functional` de Bitcoin Core para que pueda tener acceso a las librerías del framework.
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2SH.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core para que pueda tener acceso a las librerías del framework.
 
 Espero que esto te haya ayudado a animarte a usar el framework para crear transacciones y nuevos casos de prueba.
 
