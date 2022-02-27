@@ -75,6 +75,25 @@ Nuestra transacción ya ha sido añadida al mempool y posteriormente minada al g
 
 En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PKH.py) con algunas instrucciones adicionales, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
 
+## P2PK Pago a una llave pública (Pay to Public Key)
+
+Primero generamos una llave privada y con ella una llave pública.
+
+```python
+    key = ECKey()
+    key.generate()
+    pubkey = key.get_pubkey()
+```
+Usamos una función de ayuda que nos crea el scriptPubKey, Script de Cierre, (Locking Script) que utilizaremos en la transacción.
+
+```python
+    script_pubkey = key_to_p2pk_script(pubkey.get_bytes())
+    self.log.info("P2SH Script: {}".format(repr(script_pubkey)))
+```
+El resto del proceso es similar al del P2PKH, sin embargo un tema que tenemos que analizar a fondo y quedará como pendiente (TODO) es porque la transacción en la lista de UTXOs tiene una dirección de destino que no pudimos generar al inicio.
+
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PK.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
+
 ## P2SH Pago a un Hash de un Script (Pay to Script Hash)
 
 El proceso para crear una transacción P2SH es bastante similar, la principal diferencia es que, en lugar de obtener la dirección de destino de los bitcoins, a través del hash de una llave pública, lo hacemos con el hash de un script. **Esta dirección es a la que irán destinados nuestros fondos**.También es importante notar que la conversión a base58 para obtener la dirección utiliza un código de versión de bytes distinto para _regtest_ y para el _hash_ del script que es igual a _196_. La referencia completa de [como utilizar los bytes de versión la puedes consultar aquí](https://en.bitcoin.it/wiki/Base58Check_encoding#Encoding_a_Bitcoin_address).
