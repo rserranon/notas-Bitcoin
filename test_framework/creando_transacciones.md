@@ -77,7 +77,9 @@ En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx
 
 ## P2PK Pago a una llave pública (Pay to Public Key)
 
-Primero generamos una llave privada y con ella una llave pública.
+Primero es importante aclarar que los pagos a llaves públicas han sido deprecados en favor de pagos P2PKH. 
+
+Sin embargo aquí veremos como se generan. Empezamos generando una llave privada y con ella una llave pública.
 
 ```python
     key = ECKey()
@@ -90,7 +92,7 @@ Usamos una función de ayuda que nos crea el scriptPubKey, Script de Cierre, (Lo
     script_pubkey = key_to_p2pk_script(pubkey.get_bytes())
     self.log.info("P2SH Script: {}".format(repr(script_pubkey)))
 ```
-El resto del proceso es similar al del P2PKH, sin embargo un tema que tenemos que analizar a fondo y quedará como pendiente (TODO) es porque la transacción en la lista de UTXOs tiene una dirección de destino que no pudimos generar al inicio.
+El resto del proceso es similar al del P2PKH, sin embargo un tema que tenemos que analizar a fondo y quedará como pendiente (TODO) es porque la transacción en la lista de UTXOs tiene una dirección de destino que no pudimos generar al inicio. Averiguaremos si tiene que ver con el proceso de deprecación en favor de pagos P2PKH.
 
 En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2PK.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
 
