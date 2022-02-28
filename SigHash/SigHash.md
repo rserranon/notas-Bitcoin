@@ -23,7 +23,7 @@ La siguiente tabla muestra los valores que pueden elegirse para el _SIGHASH_:
 | NONE            	| 0x02  	| La firma hace commit a todas las entradas y ninguna de las salidas                                           	|
 | SINGLE          	| 0x03  	| La firma hace commit a todas las entradas pero solo a la salida<br>con el mismo número de input que se firma 	|
 
-Adicionalmente esxiste un modificador llamado _SIGHASH_ANYONECANPAY_ que puede comnbinarse con los valores que ya vimos. Con _ANYONECANPAY_ solo el un input es firmado, por lo que cualquier persona puede añadir inputs adicionales, probablemente de allí su nombre (CUALQUIERA PUEDE PAGAR).
+Adicionalmente esxiste un modificador llamado _SIGHASH_ANYONECANPAY_ que puede combinarse con los valores que ya vimos. Con _ANYONECANPAY_ solo el input es firmado, por lo que cualquier persona puede añadir inputs adicionales, probablemente de allí su nombre _ANYONECANPAY_ (CUALQUIERA PUEDE PAGAR).
 
 El modificador tiene un valor de _0x80_ y se aplica con un modificador de bit OR al valor del _SIGHASH_, veamos como afecta el modificador.
 
@@ -39,20 +39,20 @@ es importante notar que las transacciones pueden contener entradas (inputs) de d
 
 ### SIGHASH = _ALL_
 
-El caso de uso mas simple es como cualquier transacción de bitcoin que hacemos a través de una cartera, en donde no queremos que las entradas ni las salidas se puedan modificar, en este caso _ALL_ significa que todas las entradas y todas las salidas estan firmadas, por lo que no se podría modifcar la transacción.
+El caso de uso mas simple, es como cualquier transacción de bitcoin que hacemos a través de una cartera, en donde no queremos que las entradas ni las salidas se puedan modificar, en este caso _ALL_ significa que todas las entradas y todas las salidas estan firmadas, por lo que no se podría modifcar la transacción.
 
 ### SIGHASH = _ALL_ + _ANYONECANPAY_
-En este caso solo una esntrada y todas las salidas serán firmadas, en un caso hipotético en el que tengo una salida mayor a una entrada, alguien mas podria añadir una nueva entrada para completar la transacción.
+En este caso solo una esntrada y todas las salidas serán firmadas, en un caso hipotético en el que tengo una salida mayor a una entrada, alguien mas podria añadir una nueva entrada para completar la transacción. Por ejemplo en el caso de un crowdfunding.
 
 
 ### SIGHASH = _NONE_
-Esta transacción en dode se firman todas las entradas pero no las salidas, equivaldría a firmar un cheque en blanco, cualquiera puede modificar la transacción modificando las salidas existentes o creando otras
+Esta transacción en dode se firman todas las entradas pero no las salidas, equivaldría a firmar un cheque en blanco, cualquiera puede modificar la transacción, modificando las salidas existentes o creando otras.
 
 ### SIGHASH = _NONE_ + _ANYONECANPAY_
-Esta construcción puede ser utilizada como un collector de "dust" (UTXOs de montos muy pequeños) en donde estos UTXOs normalmente ni=o pueden ser gastados porque su tarifa para realizar la transacción excede el valor del "dust" UTXO. En este tipo de transaccion el UTXO puede ser donado para que alguien lo agregue a otros UTXOs para gastarlo.
+Esta construcción puede ser utilizada como un collector de "dust" (UTXOs de montos muy pequeños) en donde estos UTXOs normalmente no pueden ser gastados, porque su tarifa para realizar la transacción excede el valor del "dust" UTXO. En este tipo de transaccion el UTXO puede ser donado para que alguien lo agregue a otros UTXOs para gastarlo.
 
 ### SIGHASH = _SIGLE_
-Aqui se podría construir una transacción en la que un padre tiene 20 bitcoins y decide enviar 10 a uno de sus hijos y deja que los 10 bitcoins restantes se los distribuyan entre los dos hijos restantes que deberían crear una salida para cada uno.
+Aqui se podría construir una transacción en la que un padre tiene 20 bitcoins y decide enviar 10 a uno de sus hijos y deja que los 10 bitcoins restantes se los distribuyan entre los dos hijos restantes, que deberían crear una salida para cada uno por un total de 10BTC.
 
 ### SIGHASH = _SINGLE_ + _ANYONECANPAY_
-Se firma la entrada y la salida corrrespondiente, el resto de las entradas o salidas se excluyen. esto permite a cualquiera agregar mas entradas y mas salidas. Un caso de uso podría ser la rifa de entradas de 1BTC, en dode la unica que queda firmada es la entrada de 1BTC y la salida de 1BTC. Después de esto cualquiera podrdía agregar una nueva entrada de 1BTC y crear una salida para una persona random, también de 1BTC.
+Se firma la entrada y la salida corrrespondiente, el resto de las entradas o salidas se excluyen. esto permite a cualquiera agregar mas entradas y mas salidas. Un caso de uso podría ser la rifa de entradas de 1BTC, en dode la única que queda firmada es la entrada de 1BTC y la salida de 1BTC. Después de esto, cualquiera podrdía agregar una nueva entrada de 1BTC y crear una salida para una persona random, también de 1BTC.
