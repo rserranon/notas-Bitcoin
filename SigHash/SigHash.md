@@ -11,9 +11,9 @@ Las firmas diditales se codifican en el formato _DER_ (Distinguished Encoding Ru
 8. El valor de _S_
 9. Un sufijo que indica el valor del SIGHASH a utilizar, por ejemplo _0x01_ (SIGHASH_ALL)
 
-Las firmas digitales se aplican a mensajes, que en el caso de Bitcoin son las transacciones, sin embargo la firma puede hacer commit (estar relacionada), a un subconjunto de los datos de la transacción, aunque el comportamiento mas común es la firma completa de la transacción.
+Las firmas digitales se aplican a mensajes, que en el caso de Bitcoin son las transacciones, sin embargo la firma puede hacer commit (firmar específicamente), a un subconjunto de los datos de la transacción, aunque el comportamiento mas común es la firma completa de la transacción.
 
-La bandera _SIGHASH_ es un unico byte que es añadido al final de la firma, y esta bandera puede variar con cada entrada (input) de la transacción.
+La bandera _SIGHASH_ es un único byte que es añadido al final de la firma, y esta bandera puede variar con cada entrada (input) de la transacción.
 
 La siguiente tabla muestra los valores que pueden elegirse para el _SIGHASH_:
 
@@ -35,4 +35,24 @@ El modificador tiene un valor de _0x80_ y se aplica con un modificador de bit OR
 
 es importante notar que las transacciones pueden contener entradas (inputs) de distintos dueños. 
 
+## Casos de uso
 
+### SIGHASH = _ALL_
+
+El caso de uso mas simple es como cualquier transacción de bitcoin que hacemos a través de una cartera, en donde no queremos que las entradas ni las salidas se puedan modificar, en este caso _ALL_ significa que todas las entradas y todas las salidas estan firmadas, por lo que no se podría modifcar la transacción.
+
+### SIGHASH = _ALL_ + _ANYONECANPAY_
+En este caso solo una esntrada y todas las salidas serán firmadas, en un caso hipotético en el que tengo una salida mayor a una entrada, alguien mas podria añadir una nueva entrada para completar la transacción.
+
+
+### SIGHASH = _NONE_
+Esta transacción en dode se firman todas las entradas pero no las salidas, equivaldría a firmar un cheque en blanco, cualquiera puede modificar la transacción modificando las salidas existentes o creando otras
+
+### SIGHASH = _NONE_ + _ANYONECANPAY_
+Esta construcción puede ser utilizada como un collector de "dust" (UTXOs de montos muy pequeños) en donde estos UTXOs normalmente ni=o pueden ser gastados porque su tarifa para realizar la transacción excede el valor del "dust" UTXO. En este tipo de transaccion el UTXO puede ser donado para que alguien lo agregue a otros UTXOs para gastarlo.
+
+### SIGHASH = _SIGLE_
+Aqui se podría construir una transacción en la que un padre tiene 20 bitcoins y decide enviar 10 a uno de sus hijos y deja que los 10 bitcoins restantes se los distribuyan entre los dos hijos restantes que deberían crear una salida para cada uno.
+
+### SIGHASH = _SINGLE_ + _ANYONECANPAY_
+Se firma la entrada y la salida corrrespondiente, el resto de las entradas o salidas se excluyen. esto permite a cualquiera agregar mas entradas y mas salidas. Un caso de uso podría ser la rifa de entradas de 1BTC, en dode la unica que queda firmada es la entrada de 1BTC y la salida de 1BTC. Después de esto cualquiera podrdía agregar una nueva entrada de 1BTC y crear una salida para una persona random, también de 1BTC.
