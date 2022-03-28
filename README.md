@@ -12,3 +12,5 @@ Este repositorio contiene algunas notas personales sobre mi aprendizaje de Bitco
 * [Ejemplo P2TR](test_framework/mi_ejemplo_tx_P2TR.py)
 
 ## [Notas sobre SIGHASH](SigHash/SigHash.md)
+
+Conforme vaya creando casos nuevos iré actualizando esta guía, si te interesa ayudar o hacer algún comentario puedes mandarme un mensaje por twitter a [@Bitcoin_1o1](https://twitter.com/bitcoin_1o1).
