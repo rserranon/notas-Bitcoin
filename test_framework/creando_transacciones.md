@@ -162,7 +162,7 @@ Importamos el XPRIV y definimos la ruta de derivación (derivation path) de Tapr
     derivation_path = "/86'/1'/0'/0/*"
 ```
 
-Generamos el descriptor y el decriptoy que incluye el chechsum:
+Generamos el descriptor y el decriptor que incluye el chechsum:
 
 ```python
         descriptor = f"tr({xpriv}{derivation_path})"
