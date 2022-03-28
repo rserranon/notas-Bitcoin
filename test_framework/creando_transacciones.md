@@ -138,6 +138,58 @@ Finalmente hacemos el envío de la transacción a la dirección de destino.
 
 En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_MultiSig.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
 
+## P2TR, Pago a Taproot (Pay to Taproot)
+
+El caso de Pago a Taprrot requiere iniciar el nodo con los siguientes argumentos:
+
+```python
+        self.setup_clean_chain = True
+        self.num_nodes = 1
+        self.extra_args = [["-vbparams=taproot:1:1", "-addresstype=bech32m", "-changetype=bech32m"]]
+```
+Lo primero que hay que hacer es crear una nueva billetera que funcione con descriptores:
+
+```python
+        self.nodes[0].createwallet(wallet_name="TapRoot", descriptors=True, blank=True)
+```
+
+Creamos nuestra semilla, y XPRIV utilizando esta [página para crear semillas BIP39.](https://iancoleman.io/bip39/)
+
+Importamos el XPRIV y definimos la ruta de derivación (derivation path) de Taproot:
+
+```python
+    xpriv = 'tprv8ZgxMBicQKsPf2h5QMyUYcsbeu8jfz6tR7a7jJpvhBaPJsddMfZdYdhH7mrXPve58KTicWsrJPGEC1XSkHMhHoMxyUuauDWVtvAFvQFNsrM'
+    derivation_path = "/86'/1'/0'/0/*"
+```
+
+Generamos el descriptor y el decriptoy que incluye el chechsum:
+
+```python
+        descriptor = f"tr({xpriv}{derivation_path})"
+        descriptor_checksum = descsum_create(descriptor)
+```
+Importamos el descriptor:
+```python
+        res = self.nodes[0].importdescriptors([
+            {
+                "desc": descriptor_checksum,
+                "active": True,
+                "timestamp": "now"
+            }])
+```
+
+Una vez que generamos suficientes bloques para tener UTXOs disponibles, seleccionamos un UTXO y generamos la dirección de destino, creamos la transacción, la firmamos y la enviamos al mempool para ser procesada:
+
+```python
+        destination_address = self.nodes[0].getnewaddress(address_type='bech32m')
+
+        tx = self.nodes[0].createrawtransaction([{"txid": utxo["txid"], "vout": utxo["vout"]}], {destination_address: 49.999})
+        signed_tx = self.nodes[0].signrawtransactionwithwallet(tx)['hex']
+        txid = self.nodes[0].sendrawtransaction(signed_tx)
+```
+
+En el siguiente link puedes encontrar [el caso completo de prueba](mi_ejemplo_tx_P2TR.py) con algunas instrucciones adicionales y comentarios, para validar que todos los pasos de la creación y minado de la transacción han sido exitosos. Para poder correr el ejemplo, lo tienes que copiar al directorio `test/functional` de Bitcoin Core, para que pueda tener acceso a las librerías del framework.
+
 Espero que esto te haya ayudado a animarte a usar el framework para crear transacciones y nuevos casos de prueba.
 
 Conforme vaya creando casos nuevos iré actualizando esta guía, si te interesa ayudar o hacer algún comentario puedes mandarme un mensaje por twitter a @Bitcoin_1o1.
